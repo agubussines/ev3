@@ -267,3 +267,52 @@ async function cargarInfoComunas() {
         console.log('Error al obtener los datos: ', error)
     }
 };
+
+$(document).ready(function () {
+    cargarUsuariosEnSelect();
+});
+
+async function cargarUsuariosEnSelect() {
+    try {
+        const respuesta = await fetch('http://localhost:3000/obtenerUsuarios');
+        const usuarios = await respuesta.json();
+        
+        const select = $('#selectUsuario');
+        $.each(usuarios, function (index, usuario) {
+            select.append($('<option>', {
+                value: usuario._id,
+                text: `${usuario.nombre} (${usuario.correo})`
+            }));
+        });
+    } catch (error) {
+        console.log('Error al cargar usuarios: ', error);
+    }
+}
+
+async function guardarMascota() {
+    const formulario = $('#formularioRegistroMascota')[0];
+    const dataForm = new FormData(formulario);
+    const datos = Object.fromEntries(dataForm.entries());
+
+    if (!datos.usuarioId || !datos.nombre) {
+        alert('El dueño y el nombre de la mascota son obligatorios.');
+        return;
+    }
+
+    try {
+        const respuesta = await fetch('http://localhost:3000/guardarMascota', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos)
+        });
+
+        if (respuesta.ok) {
+            alert('Mascota registrada con éxito.');
+            window.location.href = './listado_mascotas.html';
+        } else {
+            alert('Error al registrar la mascota.');
+        }
+    } catch (error) {
+        console.log('Ha ocurrido un error: ', error);
+    }
+}

@@ -62,6 +62,24 @@ const comuna = new mongoose.Schema({
 
 const Comuna = mongoose.model('Comuna', comuna, 'comunas');
 
+const mascotaSchema = new mongoose.Schema({
+    usuarioId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Usuario' 
+    },
+    nombre: String,
+    especie: String,
+    raza: String,
+    edad: Number,
+    peso: Number,
+    color: String,
+    sexo: String,
+    fechaNacimiento: String,
+    observaciones: String
+});
+
+const Mascota = mongoose.model('Mascota', mascotaSchema, 'mascotas');
+
 // Método POST para guardar datos de USUARIO
 // Definimos el "ENDPOINT" o ruta final donde se canalizará la REQUEST (solicitud)
 aplicacion.post('/guardarUsuario', async (solicitud, respuesta) => {
@@ -80,6 +98,31 @@ aplicacion.post('/guardarUsuario', async (solicitud, respuesta) => {
     }
     catch (excepcion) {
         respuesta.status(500).json({ message: 'No ha sido posible guardar los datos: ', excepcion });
+    }
+});
+
+
+aplicacion.post('/guardarMascota', async (request, response) => {
+    try {
+        const { 
+            usuarioId, nombre, especie, raza, edad, 
+            peso, color, sexo, fechaNacimiento, observaciones 
+        } = request.body;
+
+        if (!usuarioId) {
+            return response.status(400).json({ message: 'El ID del usuario es obligatorio.' });
+        }
+
+        const nuevaMascota = new Mascota({ 
+            usuarioId, nombre, especie, raza, edad, 
+            peso, color, sexo, fechaNacimiento, observaciones 
+        });
+
+        await nuevaMascota.save();
+        response.status(200).json({ message: 'Mascota registrada correctamente' });
+    }
+    catch (excepcion) {
+        response.status(500).json({ message: 'Error al guardar la mascota: ', excepcion });
     }
 });
 
@@ -124,6 +167,32 @@ aplicacion.get('/obtenerComunas', async (request, response) => {
     }
 });
 
+
+aplicacion.get('/obtenerMascotas', async (request, response) => {
+    try {
+        const mascotas = await Mascota.aggregate([
+            {
+                $lookup: {
+                    from: 'usuarios',        
+                    localField: 'usuarioId',  
+                    foreignField: '_id',      
+                    as: 'datosDelDueno'       
+                }
+            },
+            {
+                
+                $unwind: { 
+                    path: '$datosDelDueno', 
+                    preserveNullAndEmptyArrays: true 
+                }
+            }
+        ]);
+
+        response.json(mascotas);
+    } catch (excepcion) {
+        response.status(500).json({ message: 'Error al obtener las mascotas: ', excepcion });
+    }
+});
 // Si hay un error ERR_CONNECTION_REFUSED, puede ser porque el puerto estaba en uso...
 // Usando el terminal de windows, buscamos el ID de la aplicación: netstat -ano | findstr :3000
 // Teniendo el ID de la aplicación: taskkill /PID id_app /F

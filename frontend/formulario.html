@@ -169,5 +169,73 @@
         </form>
     </div>
 </body>
+<body>
+    <div class="container mt-4">
+        <form id="formularioRegistroMascota">
+            <p class="h1">Registro de Mascota</p>
+            <hr>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="selectUsuario" class="form-label">Dueño (Usuario):</label>
+                    <select class="form-select" name="usuarioId" id="selectUsuario" required>
+                        <option selected value="">Seleccione el Dueño</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="input_nombre" class="form-label">Nombre de la Mascota:</label>
+                    <input class="form-control" type="text" name="nombre" id="input_nombre">
+                </div>
+            </div>
 
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="input_especie" class="form-label">Especie:</label>
+                    <input class="form-control" type="text" name="especie" id="input_especie" placeholder="Ej: Perro, Gato">
+                </div>
+                <div class="col-md-4">
+                    <label for="input_raza" class="form-label">Raza:</label>
+                    <input class="form-control" type="text" name="raza" id="input_raza">
+                </div>
+                <div class="col-md-4">
+                    <label for="input_color" class="form-label">Color:</label>
+                    <input class="form-control" type="text" name="color" id="input_color">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label for="input_edad" class="form-label">Edad (años):</label>
+                    <input class="form-control" type="number" name="edad" id="input_edad">
+                </div>
+                <div class="col-md-3">
+                    <label for="input_peso" class="form-label">Peso (kg):</label>
+                    <input class="form-control" type="number" step="0.1" name="peso" id="input_peso">
+                </div>
+                <div class="col-md-3">
+                    <label for="select_sexo" class="form-label">Sexo:</label>
+                    <select class="form-select" name="sexo" id="select_sexo">
+                        <option value="Macho">Macho</option>
+                        <option value="Hembra">Hembra</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="input_nacimiento" class="form-label">Fecha de Nacimiento:</label>
+                    <input class="form-control" type="date" name="fechaNacimiento" id="input_nacimiento">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-12">
+                    <label for="input_obs" class="form-label">Observaciones:</label>
+                    <textarea class="form-control" name="observaciones" id="input_obs" rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-3">
+                <button type="button" class="btn btn-primary" onclick="guardarMascota()">Registrar Mascota</button>
+            </div>
+        </form>
+    </div>
+</body>
 </html>

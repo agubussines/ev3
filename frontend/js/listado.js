@@ -51,3 +51,35 @@ function cargarGenero(genero) {
     }
     return respuesta;
 }
+
+async function cargarListadoMascotas() {
+    try {
+        const respuesta = await fetch('http://localhost:3000/obtenerMascotas');
+        const mascotas = await respuesta.json();
+        
+        const tbody = $('#tablaMascotas');
+        tbody.empty();
+
+        $.each(mascotas, function (index, mascota) {
+            // Se extrae el nombre del dueño gracias a la agregación $lookup
+            let nombreDueno = mascota.datosDelDueno ? mascota.datosDelDueno.nombre : 'Sin dueño';
+
+            let fila = `
+                <tr>
+                    <td class="fw-bold text-primary">${nombreDueno}</td>
+                    <td>${mascota.nombre || '-'}</td>
+                    <td>${mascota.especie || '-'}</td>
+                    <td>${mascota.raza || '-'}</td>
+                    <td>${mascota.edad || 0} años / ${mascota.peso || 0} kg</td>
+                    <td>${mascota.sexo || '-'}</td>
+                    <td>${mascota.observaciones || '-'}</td>
+                </tr>
+            `;
+            tbody.append(fila);
+        });
+
+    } catch (error) {
+        console.log('Error al obtener las mascotas: ', error);
+        alert('Hubo un problema al cargar los datos.');
+    }
+}
